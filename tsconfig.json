@@ -9,11 +9,13 @@
     "./**/*.tsx"
   ],
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "paths": {
       "~*": [
-        "./*"
-      ]
+        "./*", 
+      ],
+      "@app-types/*": ["./types/*"]
     },
-    "baseUrl": "."
-  }
+    "baseUrl": ".",
+  },
 }
