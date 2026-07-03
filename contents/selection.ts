@@ -1,55 +1,89 @@
-// fire event when user selects text only after like the text is selected for at least 
-// i need to add debouncing here to 
-
-import type { selectionData , selectPosition } from "@app-types/selection-types";
-
+import debounce from "./utils/debouncer";
+import type { selectionData, position } from "@app-types/selection-types";
+import {Events} from "@constants/events";
 
 export const config = {
-  matches: ["<all_urls>"]
-}
+    matches: ["<all_urls>"]
+};
 
 
-
-function debounce<T extends (...args: any[]) => void>(
-  callback: T,
-  delay: number
-) {
-  let timeoutId: ReturnType<typeof setTimeout>;
-
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeoutId);
-
-    timeoutId = setTimeout(() => {
-      callback(...args);
-    }, delay);
-  };
-}
-
-
-function handleSelection() : {data : selectionData , rect : selectPosition} | undefined {
+function handleSelection(): void {
     const selection = window.getSelection();
-    if(!selection || selection.rangeCount === 0) return; 
-    const text = selection.toString().trim();
-    if(text.length <= 0) return; 
+
     
-    // trying to find the closest paragraph to the selection 
+    
+    if (!selection || selection.rangeCount === 0){
+        return;
+    }
+    
     const range = selection.getRangeAt(0);
-    const  rect : selectPosition  = range.getBoundingClientRect();
-    let element : Node | HTMLElement = range.commonAncestorContainer; 
-    if(element.nodeType === Node.TEXT_NODE){
-        element = element.parentElement as HTMLElement; 
-    }
-    const container = (element as HTMLElement).closest("p, div, span, article, section") as HTMLElement | null; 
     
-    const data : selectionData = {
-        selectedText : text, 
-        container : container,
-        containerText : container?.innerText || ""
+    const element =
+    range.commonAncestorContainer.nodeType === Node.TEXT_NODE
+    ? range.commonAncestorContainer.parentElement
+    : (range.commonAncestorContainer as HTMLElement);
+    
+    if(element?.closest("[data-telmee-overlay]")){
+        return;
     }
-    console.log(rect.height, rect.width, rect.top , rect.left);
-    return {data , rect};
+    
+    if(selection.isCollapsed){
+        return;
+    }
+    const text = selection.toString().trim();
+
+    if(!text && !/^\S+$/.test(text)){
+        return;
+    }
+    
+    // Get bounding rect of the FIRST selected word
+    let rect: position = range.getBoundingClientRect();
+
+    if (range.startContainer.nodeType === Node.TEXT_NODE) {
+        const textNode = range.startContainer;
+        const textContent = textNode.textContent ?? "";
+
+        let start = range.startOffset;
+
+        // Move to beginning of the word
+        while (start > 0 && /\S/.test(textContent[start - 1])) {
+            start--;
+        }
+
+        let end = start;
+
+        // Move to end of the word
+        while (end < textContent.length && /\S/.test(textContent[end])) {
+            end++;
+        }
+
+        const firstWordRange = document.createRange();
+        firstWordRange.setStart(textNode, start);
+        firstWordRange.setEnd(textNode, end);
+
+        rect = firstWordRange.getBoundingClientRect();
+    }
+
+    const container = (element)?.closest(
+        "p, div, span, article, section"
+    ) as HTMLElement | null;
+
+    const data: selectionData = {
+        selectedText: text,
+        container,
+        containerText: container?.innerText || ""
+    };
+
+    window.dispatchEvent(
+        new CustomEvent(Events.OVERLAY_OPEN, {
+            detail: {
+                position: rect,
+                data
+            }
+        })
+    );
 }
 
-const selectionHandler = debounce(handleSelection, 600);`` 
+const selectionHandler = debounce(handleSelection, 400);
 
 document.addEventListener("mouseup", selectionHandler);

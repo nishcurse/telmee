@@ -1,0 +1,95 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  mode: "jit",
+  darkMode: "class",
+  theme: {
+     theme: {
+        extend: {
+            "colors": {
+                "primary-fixed": "#dbe1ff",
+                "on-primary-container": "#eeefff",
+                "surface-bright": "#f9f9ff",
+                "on-primary-fixed-variant": "#003ea8",
+                "error": "#ba1a1a",
+                "surface-container": "#e9edff",
+                "surface-tint": "#0053db",
+                "outline": "#737686",
+                "on-error-container": "#93000a",
+                "surface-container-high": "#e1e8fd",
+                "on-secondary-container": "#5e6572",
+                "on-background": "#141b2b",
+                "inverse-surface": "#293040",
+                "neon-purple-glow": "rgba(133, 59, 206, 0.15)",
+                "surface-container-lowest": "#ffffff",
+                "on-surface-variant": "#434655",
+                "error-container": "#ffdad6",
+                "on-tertiary-container": "#f9ecff",
+                "neon-blue-glow": "rgba(37, 99, 235, 0.15)",
+                "inverse-primary": "#b4c5ff",
+                "border-subtle": "#E5E7EB",
+                "on-tertiary-fixed": "#2c0051",
+                "secondary-fixed": "#dce2f3",
+                "inverse-on-surface": "#edf0ff",
+                "secondary-container": "#dce2f3",
+                "on-tertiary-fixed-variant": "#660eaf",
+                "on-tertiary": "#ffffff",
+                "background-subtle": "#F9FAFB",
+                "surface": "#f9f9ff",
+                "on-surface": "#141b2b",
+                "background": "#f9f9ff",
+                "background-page": "#FFFFFF",
+                "tertiary-fixed": "#f0dbff",
+                "tertiary": "#7628be",
+                "secondary": "#585f6c",
+                "primary-fixed-dim": "#b4c5ff",
+                "on-secondary-fixed": "#151c27",
+                "tertiary-fixed-dim": "#dcb8ff",
+                "tertiary-container": "#9047d9",
+                "outline-variant": "#c3c6d7",
+                "on-primary": "#ffffff",
+                "on-secondary-fixed-variant": "#404754",
+                "on-error": "#ffffff",
+                "on-primary-fixed": "#00174b",
+                "surface-variant": "#dce2f7",
+                "surface-dim": "#d3daef",
+                "on-secondary": "#ffffff",
+                "surface-container-highest": "#dce2f7",
+                "surface-container-low": "#f1f3ff",
+                "secondary-fixed-dim": "#c0c7d6",
+                "primary-container": "#2563eb",
+                "primary": "#004ac6"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "spacing": {
+                "unit": "4px",
+                "margin": "32px",
+                "max-width": "1200px",
+                "gutter": "24px"
+            },
+            "fontFamily": {
+                "headline-lg-mobile": ["Inter"],
+                "label-sm": ["Inter"],
+                "headline-md": ["Inter"],
+                "headline-lg": ["Inter"],
+                "code": ["jetbrainsMono"],
+                "body-md": ["Inter"]
+            },
+            "fontSize": {
+                "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                "label-sm": ["12px", { "lineHeight": "1.5", "fontWeight": "500" }],
+                "headline-md": ["16px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                "code": ["13px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                "body-md": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }]
+            }
+        },
+    },
+  },
+  content: ["./popup.tsx", "./contents/**/*.tsx"],
+  plugins: []
+}

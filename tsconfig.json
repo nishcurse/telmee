@@ -14,7 +14,10 @@
       "~*": [
         "./*", 
       ],
-      "@app-types/*": ["./types/*"]
+      "@app-types/*": ["./types/*"],
+      "@/lib/*": ["./lib/*"],
+      "@constants/*": ["./constants/*"],
+      "@store/*" : ["./store/*"]
     },
     "baseUrl": ".",
   },
