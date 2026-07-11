@@ -1,10 +1,6 @@
-import React, { useEffect, useRef} from "react"
+import React from "react"
 import cssText from "data-text:~/style.css"
-import {Events} from "@constants/events"
 import {useOverlayStore} from "@store/store"
-import type {position, selectionData} from "@app-types/selection-types"
-import useClickEvents from "./hooks/useOutsideClick"
-import useOverlayEvents from "./hooks/useOverlayEvents"
 
 
 export const getStyle = () => {
@@ -14,33 +10,43 @@ export const getStyle = () => {
 }
 
 
-
 const OverlayButton = () => {
+  const { buttonVisible, position, showPopup } = useOverlayStore()
 
-  const { buttonVisible, position , showPopup }  =  useOverlayStore()
-  useOverlayEvents(); 
-  const ref = useRef<HTMLButtonElement | null>(null);
-  const popupRef = useRef<HTMLDivElement | null>(null);
-  // connect to the custom event fired from the selection handler in cs
-  useClickEvents();
-
-  
+  if (!buttonVisible || !position) {
+    return null
+  }
 
   return (
-    buttonVisible && position ? (
-      <button
-        ref = {ref}
-        data-telmee-overlay 
-        type="button"
-        onClick={showPopup}
-        className="bg-slate-600 text-white rounded px-3 py-2 shadow-md fixed z-[999999]"
-        style={{ left: position.left + position.width / 2
-        , top: position.top + position.height + 8 }}>
+    <button
+      data-telmee-overlay
+      type="button"
+      onClick={() => {
+        console.log("OverlayButton clicked, showing popup")
+        showPopup()
+        console.log(useOverlayStore.getState())
+      }}
+      className="fixed z-[2147483647] pointer-events-auto w-[128px] rounded-xl border border-white/70 bg-white shadow-2xl shadow-black/10 ring-1 ring-black/5 px-4 py-3 text-left"
+      style={{
+        left: position.left + position.width / 2,
+        top: position.top + position.height + 12,
+        transform: "translateX(-50%)"
+      }}
+    >
+      <span
+        className="block text-[10px] uppercase tracking-[0.2em] text-on-surface-variant/60"
+        style={{ textShadow: "none" }}
+      >
         Telmee
-      </button>
-    ) : null
+      </span>
+      <span
+        className="block text-sm font-semibold text-on-surface"
+        style={{ textShadow: "none" }}
+      >
+        Open popup
+      </span>
+    </button>
   )
 }
 
 export default OverlayButton
-

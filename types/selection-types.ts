@@ -11,18 +11,6 @@ export interface selectionData {
   containerText: string
 }
 
-export interface DictionaryCardProps {
-  word: string;
-  pronunciation: string;
-  definitions: Array<{
-    partOfSpeech: string;
-    definition: string;
-    example: string;
-  }>;
-  origin: string;
-  insight: string;
-  onBookmark?: () => void;
-}
 
 export interface overlayStore {
     buttonVisible : boolean, 
@@ -37,6 +25,36 @@ export interface overlayStore {
   }
 
 export interface searchData {
-  data : JSON | null, 
-  setData(newData :JSON) : void 
+  data :  Dictonaryresp | null,
+  setData(newData :Dictonaryresp | null) : void 
 } 
+
+
+export type Dictonaryresp = {
+  word: string;
+  phonetic: string;
+  phonetics: {
+    text: string;
+    audio?: string;
+  }[];
+  origin: string;
+  meanings: {
+    partOfSpeech: string;
+    definitions: {
+      definition: string;
+      example?: string;
+      synonyms: string[];
+      antonyms: string[];
+    }[];
+  }[];
+}[];
+
+export type BookmarkData = Record<string , Dictonaryresp>;
+
+export interface BookmarkClient {
+  getAll() : Promise<BookmarkData>, 
+  save(data : BookmarkData) : Promise<void>, 
+  remove(word : string) : Promise<void>,
+  exists(word : string) : Promise<boolean>, 
+  clear() : Promise<void>
+}

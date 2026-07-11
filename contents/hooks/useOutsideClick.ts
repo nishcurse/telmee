@@ -4,15 +4,20 @@ import { useOverlayStore } from "@store/store"
 export default function useOutsideClick() {
     const clear = useOverlayStore((st) => st.clear)
     const buttonVisible = useOverlayStore((st) => st.buttonVisible)
-
+    const popupVisible = useOverlayStore((st) => st.popupVisible)
     useEffect(() => {
-        if (!buttonVisible) return
+        if (!buttonVisible && !popupVisible) return
 
         function handleOutsideClick(e: MouseEvent) {
             const target = e.target as HTMLElement | null
 
-            if (target?.closest("[data-telmee-overlay]"))
+            if (target?.closest("[data-telmee-overlay]")){
+                return;
+            }
+            if (target?.tagName === "PLASMO-CSUI" || target?.tagName === "plasmo-csui") {
                 return
+            }
+            console.log("Outside click detected, clearing overlay state");
 
             clear()
         }
@@ -26,5 +31,5 @@ export default function useOutsideClick() {
                 true
             )
         }
-    }, [buttonVisible, clear])
+    }, [buttonVisible, clear , popupVisible])
 }

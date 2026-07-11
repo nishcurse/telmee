@@ -1,18 +1,27 @@
 import debounce from "./utils/debouncer";
-import type { selectionData, position } from "@app-types/selection-types";
+import type { selectionData, position , Dictonaryresp } from "@app-types/selection-types";
 import {Events} from "@constants/events";
+import { useSearch } from "./apis/useSearch"
 
 export const config = {
     matches: ["<all_urls>"]
 };
 
 
-function handleSelection(): void {
+async function handleSelection(e: MouseEvent): Promise<void> {
     const selection = window.getSelection();
-
+    const target = e.target as HTMLElement | null;
+    console.log(target);
+    if (target?.closest("[data-telmee-overlay]")) {
+        return;
+    }
+    if (target?.tagName === "PLASMO-CSUI") {
+        return
+    }
     
     
     if (!selection || selection.rangeCount === 0){
+        
         return;
     }
     
@@ -23,9 +32,7 @@ function handleSelection(): void {
     ? range.commonAncestorContainer.parentElement
     : (range.commonAncestorContainer as HTMLElement);
     
-    if(element?.closest("[data-telmee-overlay]")){
-        return;
-    }
+
     
     if(selection.isCollapsed){
         return;
@@ -68,17 +75,27 @@ function handleSelection(): void {
         "p, div, span, article, section"
     ) as HTMLElement | null;
 
+    const apiData: Dictonaryresp | null = await useSearch(text); 
+    if(apiData === null){
+        return;
+    }
+
+
     const data: selectionData = {
         selectedText: text,
         container,
         containerText: container?.innerText || ""
     };
-
+    // we should hit the api and check if we even the data using the api we have 
+    // for customization you can just chane useSearch Hook to use the api rest remains the same 
+    
+    console.log(apiData);
     window.dispatchEvent(
         new CustomEvent(Events.OVERLAY_OPEN, {
             detail: {
                 position: rect,
-                data
+                data, 
+                ApiData : apiData
             }
         })
     );
