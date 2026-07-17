@@ -1,6 +1,6 @@
 import {create} from 'zustand' 
-import type {position, selectionData , overlayStore , searchData} from '@app-types/selection-types'; 
-
+import type {position, selectionData , overlayStore , searchData , BookmarkStore, Dictonaryresp, BookmarkData} from '@app-types/selection-types'; 
+import {BookmarkClient} from 'contents/storage/BookmarkClient'
 
 export const useOverlayStore = create<overlayStore>((set) => ({
     buttonVisible: false,
@@ -17,4 +17,46 @@ export const useOverlayStore = create<overlayStore>((set) => ({
 export const useSearchStore = create<searchData> ((set) => ({
     data : null,
     setData : (newData) => set({data :newData})
+}))
+
+
+export const useBookmarkStore = create<BookmarkStore>((set, get) => ({
+  data: {},
+
+  async initialize() {
+    const data = await BookmarkClient.getAll()
+    set({ data })
+  },
+
+  async setData(newData: BookmarkData) {
+    await BookmarkClient.save(newData)
+    set({ data: newData })
+  },
+
+  async addWord(word: string, dictionary: Dictonaryresp) {
+    const updated = {
+      ...get().data,
+      [word]: dictionary
+    }
+
+    await BookmarkClient.save(updated)
+    set({ data: updated })
+
+    return true
+  },
+
+  async removeWord(word: string) {
+    const updated = { ...get().data }
+
+    delete updated[word]
+
+    await BookmarkClient.save(updated)
+    set({ data: updated })
+
+    return true
+  },
+
+  exists(word: string) {
+    return Object.hasOwn(get().data, word)
+  }
 }))

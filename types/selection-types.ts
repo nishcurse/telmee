@@ -58,3 +58,18 @@ export interface BookmarkClient {
   exists(word : string) : Promise<boolean>, 
   clear() : Promise<void>
 }
+
+
+export interface BookmarkStore {
+  data: BookmarkData,
+
+  initialize(): Promise<void>,
+
+  setData(data: BookmarkData): Promise<void>,
+
+  addWord(word: string, data: Dictonaryresp): Promise<boolean>,
+
+  removeWord(word: string): Promise<boolean>,
+
+  exists(word: string): boolean
+}

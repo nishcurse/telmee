@@ -1,7 +1,7 @@
 import type { Dictonaryresp } from "@app-types/selection-types"
-import { useOverlayStore, useSearchStore } from "@store/store"
+import { useOverlayStore, useSearchStore, useBookmarkStore} from "@store/store"
 import cssText from "data-text:~/style.css"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { DefinitionSection } from "./definition-section"
 import { InsightSection } from "./insight-section"
@@ -17,7 +17,14 @@ export default function DictionaryCard() {
   const popupVisible = useOverlayStore((st) => st.popupVisible)
   const position = useOverlayStore((st) => st.position)
   const data = useSearchStore((st) => st.data)
-  const [isBookmarked, setIsBookmarked] = useState(false)
+  const intialize = useBookmarkStore((st) => st.initialize)
+  const addWord = useBookmarkStore((st) => st.addWord)
+  const removeWord = useBookmarkStore((st) => st.removeWord)
+  const exists = useBookmarkStore((st) => st.exists)
+  const bookmarkData = useBookmarkStore((st) => st.data)
+
+  
+  const [isBookmarked, setIsBookmarked] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false)
 
   if (!popupVisible || !position) {
@@ -38,7 +45,16 @@ export default function DictionaryCard() {
   const popupTop = openAbove ? Math.max(edge, position.top - gap) : preferredTop
 
   const handleBookmark = () => {
-    setIsBookmarked(!isBookmarked)
+    if(isBookmarked) {
+      removeWord(data[0]?.word).then(() => {
+        setIsBookmarked(false);
+      })
+    }else{
+      addWord(data[0]?.word , data).then(() => {
+        setIsBookmarked(true);
+      });
+    }
+    console.log("handleBookmark called, isBookmarked:", bookmarkData);
   }
 
   const handlePronunciation = async () => {
