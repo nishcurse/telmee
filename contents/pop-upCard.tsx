@@ -1,7 +1,10 @@
+/// <reference types="chrome" />
+
 import type { Dictonaryresp } from "@app-types/selection-types"
 import { useOverlayStore, useSearchStore, useBookmarkStore} from "@store/store"
+import { useSelectionFloating } from "./hooks/useSelectionFloating"
 import cssText from "data-text:~/style.css"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 
 import { DefinitionSection } from "./definition-section"
 import { InsightSection } from "./insight-section"
@@ -26,23 +29,11 @@ export default function DictionaryCard() {
   
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false)
+  const { floatingStyles, refs } = useSelectionFloating(position, popupVisible)
 
   if (!popupVisible || !position) {
     return null
   }
-
-  const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0
-  const gap = 8
-  const edge = 16
-  const preferredTop = position.top + position.height + gap
-  const spaceBelow = viewportHeight ? viewportHeight - preferredTop - edge : 0
-  const spaceAbove = position.top - edge - gap
-  const openAbove = viewportHeight
-    ? spaceBelow < 280 && spaceAbove > spaceBelow
-    : false
-
-  // We keep the dynamic top positioning so it doesn't render off-screen
-  const popupTop = openAbove ? Math.max(edge, position.top - gap) : preferredTop
 
   const handleBookmark = () => {
     if(isBookmarked) {
@@ -72,7 +63,6 @@ export default function DictionaryCard() {
         
         try {
           setIsPlayingAudio(true);
-          console.log("Sending message to background script");
           const response = await chrome.runtime.sendMessage({
             action: "processAudio",
             audioUrl: audioUrl
@@ -93,6 +83,8 @@ export default function DictionaryCard() {
 
         }catch (err) {
           console.log("Error while playing audio: handlePronunciation popUPcard", err);
+        }finally{
+          setIsPlayingAudio(false);
         }
 
       }
@@ -107,13 +99,11 @@ export default function DictionaryCard() {
       className="fixed inset-0 z-[2147483647] pointer-events-none pl-3"
       style={{ textShadow: "none" }}>
       <div
-        className="pointer-events-auto absolute w-full max-w-[360px] overflow-hidden rounded-xl border border-white/70 bg-white/20 backdrop-blur-md shadow-2xl shadow-black/10 ring-1 ring-black/5"
+        ref={refs.setFloating}
+        className="pointer-events-auto flex flex-col overflow-hidden rounded-xl border border-white/70 bg-white/20 backdrop-blur-md shadow-2xl shadow-black/10 ring-1 ring-black/5"
         style={{
-          left: position.left + position.width / 2,
-          top: popupTop,
-          transform: "translateX(-50%)",
-          maxHeight: "450px",
-          willChange: "transform" // 1. Fixed the height here
+          ...floatingStyles,
+          willChange: "transform"
         }}>
         {/* 2. Moved Bookmark Button OUTSIDE the scrollable container */}
         <button
@@ -139,7 +129,7 @@ export default function DictionaryCard() {
         </button>
 
         {/* 3. Dedicated scrollable content wrapper */}
-        <div className="max-h-[450px] w-full overflow-y-auto scrollbar-thin scrollbar-thumb-transparent p-5 sm:p-6 pr-4">
+        <div className="min-h-0 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-transparent p-5 sm:p-6 pr-4">
           {/* Header Section */}
           <div className="flex flex-col gap-1 mb-6 pr-8">
             {" "}

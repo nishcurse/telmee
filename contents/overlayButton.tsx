@@ -1,6 +1,7 @@
 import React from "react"
 import cssText from "data-text:~/style.css"
 import {useOverlayStore} from "@store/store"
+import { useSelectionFloating } from "./hooks/useSelectionFloating"
 
 
 export const getStyle = () => {
@@ -12,6 +13,9 @@ export const getStyle = () => {
 
 const OverlayButton = () => {
   const { buttonVisible, position, showPopup } = useOverlayStore()
+  const { floatingStyles, refs } = useSelectionFloating(position, buttonVisible, {
+    offsetValue: 12
+  })
 
   if (!buttonVisible || !position) {
     return null
@@ -21,16 +25,15 @@ const OverlayButton = () => {
     <button
       data-telmee-overlay
       type="button"
+      ref={refs.setFloating}
       onClick={() => {
         console.log("OverlayButton clicked, showing popup")
         showPopup()
         console.log(useOverlayStore.getState())
       }}
-      className="fixed z-[2147483647] pointer-events-auto w-[128px] rounded-xl border border-white/70 bg-white shadow-2xl shadow-black/10 ring-1 ring-black/5 px-4 py-3 text-left"
+      className="z-[2147483647] pointer-events-auto w-[128px] rounded-xl border border-white/70 bg-white shadow-2xl shadow-black/10 ring-1 ring-black/5 px-4 py-3 text-left"
       style={{
-        left: position.left + position.width / 2,
-        top: position.top + position.height + 12,
-        transform: "translateX(-50%)"
+        ...floatingStyles
       }}
     >
       <span
