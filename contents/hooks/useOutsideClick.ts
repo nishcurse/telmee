@@ -17,7 +17,6 @@ export default function useOutsideClick() {
             if (target?.tagName === "PLASMO-CSUI" || target?.tagName === "plasmo-csui") {
                 return
             }
-            console.log("Outside click detected, clearing overlay state");
 
             clear()
         }

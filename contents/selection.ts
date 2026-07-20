@@ -11,7 +11,6 @@ export const config = {
 async function handleSelection(e: MouseEvent): Promise<void> {
     const selection = window.getSelection();
     const target = e.target as HTMLElement | null;
-    console.log(target);
     if (target?.closest("[data-telmee-overlay]")) {
         return;
     }
@@ -89,7 +88,6 @@ async function handleSelection(e: MouseEvent): Promise<void> {
     // we should hit the api and check if we even the data using the api we have 
     // for customization you can just chane useSearch Hook to use the api rest remains the same 
     
-    console.log(apiData);
     window.dispatchEvent(
         new CustomEvent(Events.OVERLAY_OPEN, {
             detail: {

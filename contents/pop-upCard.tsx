@@ -45,20 +45,16 @@ export default function DictionaryCard() {
         setIsBookmarked(true);
       });
     }
-    console.log("handleBookmark called, isBookmarked:", bookmarkData);
   }
 
   const handlePronunciation = async () => {
-    console.log("handlePronunciation called");
     if(isPlayingAudio) {
-      console.log("already playing audio, returning");
       return;
     }
 
     if(data[0]?.phonetics && data[0].phonetics.length > 0) {
       const validPhonetic = data[0].phonetics.find((p: any) => p.audio && p.audio.length > 0);
       const audioUrl = validPhonetic?.audio;
-      console.log("handlePronunciation audioUrl", audioUrl);
       if(audioUrl){
         
         try {
@@ -70,11 +66,9 @@ export default function DictionaryCard() {
 
 
           if (response?.error || !response?.dataUrl) {
-            console.log("Error while processing audio: handlePronunciation popUPcard", response?.error);
             setIsPlayingAudio(false);
             return;
           }
-          console.log("response from background script", response);
           const audio = new Audio(response.dataUrl);
           await audio.play();  
           audio.onended = () => {
@@ -82,7 +76,6 @@ export default function DictionaryCard() {
           };
 
         }catch (err) {
-          console.log("Error while playing audio: handlePronunciation popUPcard", err);
         }finally{
           setIsPlayingAudio(false);
         }

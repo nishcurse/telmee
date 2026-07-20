@@ -14,7 +14,8 @@ export const getStyle = () => {
 const OverlayButton = () => {
   const { buttonVisible, position, showPopup } = useOverlayStore()
   const { floatingStyles, refs } = useSelectionFloating(position, buttonVisible, {
-    offsetValue: 12
+    offsetValue: 12,
+    maxWidth: 128,
   })
 
   if (!buttonVisible || !position) {
@@ -31,7 +32,7 @@ const OverlayButton = () => {
         showPopup()
         console.log(useOverlayStore.getState())
       }}
-      className="z-[2147483647] pointer-events-auto w-[128px] rounded-xl border border-white/70 bg-white shadow-2xl shadow-black/10 ring-1 ring-black/5 px-4 py-3 text-left"
+      className="z-[2147483647] pointer-events-auto max-w-[128px] rounded-xl border border-white/70 bg-white shadow-2xl shadow-black/10 ring-1 ring-black/5 px-4 py-3 text-left"
       style={{
         ...floatingStyles
       }}
