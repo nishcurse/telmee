@@ -5,7 +5,7 @@ Telmee is a Chrome extension that listens to highlighted text on a page, fetches
 
 [![Install from Chrome Web Store](https://img.shields.io/badge/Install-Chrome_Web_Store-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/REPLACE-WITH-YOUR-EXTENSION-ID)
 
-> Replace the link above with your published Chrome Web Store URL once the extension is live.
+- need to update the link 
 
 ## Index
 
